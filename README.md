@@ -5,3 +5,6 @@
 # you need to clone the project
 $ git clone https://github.com/emil-1003/InvestmentServiceBackendGolang.git
 ```
+
+---
+> *Created by - Emil Andersen - 2023*
