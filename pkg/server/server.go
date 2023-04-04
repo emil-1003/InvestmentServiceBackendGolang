@@ -21,6 +21,7 @@ func New(name, version, port, path string) (*Server, error) {
 	s := r.PathPrefix(fmt.Sprintf("/%s/%s", path, version)).Subrouter()
 
 	s.Path("/signup").Handler(handlers.Signup()).Methods("POST")
+	s.Path("/login").Handler(handlers.Login()).Methods("POST")
 
 	return &Server{name, version, s, port}, nil
 }

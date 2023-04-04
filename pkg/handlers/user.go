@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/emil-1003/InvestmentServiceBackendGolang/pkg/authentication"
 	"github.com/emil-1003/InvestmentServiceBackendGolang/pkg/models"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -36,5 +37,50 @@ func Signup() http.HandlerFunc {
 		}
 
 		w.Write([]byte("user was registered successfully"))
+	}
+}
+
+func Login() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+
+		var body struct {
+			Email    string
+			Password string
+		}
+
+		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+			fmt.Println(fmt.Errorf("failed to read body: %w", err).Error())
+			http.Error(w, fmt.Errorf("failed to read body: %w", err).Error(), http.StatusBadRequest)
+			return
+		}
+
+		user, err := models.GetUserByEmail(body.Email)
+		if err != nil {
+			fmt.Println(err.Error())
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		if err := models.AuthenticateUserPassword(user.Password, body.Password); err != nil {
+			fmt.Println(err.Error())
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		tokenString, err := authentication.CreateToken(user)
+		if err != nil {
+			fmt.Println(err.Error())
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		if err := models.UpdateUserLastLogin(user); err != nil {
+			fmt.Println(err.Error())
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		w.Write([]byte(tokenString))
 	}
 }
