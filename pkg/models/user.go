@@ -3,6 +3,7 @@ package models
 import (
 	"database/sql"
 	"fmt"
+	"time"
 
 	"github.com/emil-1003/InvestmentServiceBackendGolang/pkg/database"
 	"golang.org/x/crypto/bcrypt"
@@ -71,4 +72,39 @@ func UpdateUserLastLogin(user User) error {
 	}
 
 	return err
+}
+
+func GetUsers() ([]User, error) {
+	var users []User
+
+	rows, err := database.DB.Query(`
+		SELECT users.*, role.name AS role_name 
+		FROM users
+		JOIN role ON users.role_id = role.id;
+	`)
+	if err != nil {
+		return users, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var u User
+		var r Role
+
+		if err := rows.Scan(&u.ID, &u.Name, &u.Email, &u.Password, &r.ID, &u.Created, &u.Login, &r.Name); err != nil {
+			return users, err
+		}
+
+		u.Role = r
+
+		createdParsedTime, _ := time.Parse(time.RFC3339, u.Created)
+		u.Created = createdParsedTime.Format("2006-01-02 15:04")
+
+		loginParsedTime, _ := time.Parse(time.RFC3339, u.Login)
+		u.Login = loginParsedTime.Format("2006-01-02 15:04")
+
+		users = append(users, u)
+	}
+
+	return users, err
 }
