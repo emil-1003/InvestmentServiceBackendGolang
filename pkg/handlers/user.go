@@ -84,3 +84,17 @@ func Login() http.HandlerFunc {
 		w.Write([]byte(tokenString))
 	}
 }
+
+func GetUsers() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+
+		users, err := models.GetUsers()
+		if err != nil {
+			http.Error(w, fmt.Errorf("failed to get users: %w", err).Error(), http.StatusNotFound)
+			return
+		}
+
+		json.NewEncoder(w).Encode(users)
+	}
+}

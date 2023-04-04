@@ -23,6 +23,8 @@ func New(name, version, port, path string) (*Server, error) {
 	s.Path("/signup").Handler(handlers.Signup()).Methods("POST")
 	s.Path("/login").Handler(handlers.Login()).Methods("POST")
 
+	s.Path("/users").Handler(handlers.GetUsers()).Methods("GET")
+
 	return &Server{name, version, s, port}, nil
 }
 
