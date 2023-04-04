@@ -20,7 +20,7 @@ func New(name, version, port, path string) (*Server, error) {
 
 	s := r.PathPrefix(fmt.Sprintf("/%s/%s", path, version)).Subrouter()
 
-	s.Path("/hello").Handler(handlers.Hello()).Methods("GET") // http://localhost:8585/api/v1/hello
+	s.Path("/signup").Handler(handlers.Signup()).Methods("POST")
 
 	return &Server{name, version, s, port}, nil
 }
