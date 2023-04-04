@@ -5,6 +5,7 @@ import (
 
 	"github.com/emil-1003/InvestmentServiceBackendGolang/pkg/database"
 	"github.com/emil-1003/InvestmentServiceBackendGolang/pkg/server"
+	"github.com/joho/godotenv"
 )
 
 const (
@@ -15,6 +16,11 @@ const (
 )
 
 func init() {
+	// Load .env file
+	if err := godotenv.Load(); err != nil {
+		log.Fatalf("Error loading .env file: %s", err)
+	}
+
 	// Start db connection
 	if err := database.ConnectToDb(); err != nil {
 		log.Fatalf("Error connecting to database: %s", err)
