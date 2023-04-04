@@ -25,6 +25,7 @@ func New(name, version, port, path string) (*Server, error) {
 	s.Path("/login").Handler(handlers.Login()).Methods("POST")
 
 	s.Path("/users").Handler(middleware.Secure(handlers.GetUsers())).Methods("GET")
+	s.Path("/users/{id}").Handler(middleware.Secure(handlers.DeleteUser())).Methods("DELETE")
 
 	return &Server{name, version, s, port}, nil
 }
