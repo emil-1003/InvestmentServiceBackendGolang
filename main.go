@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 
+	"github.com/emil-1003/InvestmentServiceBackendGolang/pkg/database"
 	"github.com/emil-1003/InvestmentServiceBackendGolang/pkg/server"
 )
 
@@ -12,6 +13,13 @@ const (
 	apiPort    = ":8585"
 	apiName    = "Investment Service API"
 )
+
+func init() {
+	// Start db connection
+	if err := database.ConnectToDb(); err != nil {
+		log.Fatalf("Error connecting to database: %s", err)
+	}
+}
 
 func main() {
 	// Start server
