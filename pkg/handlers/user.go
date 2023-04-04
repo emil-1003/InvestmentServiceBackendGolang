@@ -4,9 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/emil-1003/InvestmentServiceBackendGolang/pkg/authentication"
 	"github.com/emil-1003/InvestmentServiceBackendGolang/pkg/models"
+	"github.com/gorilla/mux"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -96,5 +98,26 @@ func GetUsers() http.HandlerFunc {
 		}
 
 		json.NewEncoder(w).Encode(users)
+	}
+}
+
+func DeleteUser() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+
+		idString := mux.Vars(r)["id"]
+		id, err := strconv.Atoi(idString)
+		if err != nil {
+			http.Error(w, fmt.Errorf("invalid id: %w", err).Error(), http.StatusBadRequest)
+			return
+		}
+
+		err = models.DeleteUser(id)
+		if err != nil {
+			http.Error(w, fmt.Errorf("failed to delete user: %w", err).Error(), http.StatusNotFound)
+			return
+		}
+
+		w.Write([]byte("user was successfully deleted"))
 	}
 }

@@ -108,3 +108,16 @@ func GetUsers() ([]User, error) {
 
 	return users, err
 }
+
+func DeleteUser(id int) error {
+
+	_, err := database.DB.Exec(`
+		DELETE FROM users
+		WHERE id = ?
+	`, id)
+	if err != nil {
+		return fmt.Errorf("failed to delete user: %w", err)
+	}
+
+	return err
+}
