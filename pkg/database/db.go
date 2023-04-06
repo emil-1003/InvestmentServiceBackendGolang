@@ -29,8 +29,6 @@ func ConnectToDb() error {
 
 	dbInfo := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", c.Username, c.Password, c.Host, c.Port, c.Name)
 
-	fmt.Println(dbInfo)
-
 	var err error
 	DB, err = sql.Open("mysql", dbInfo)
 	if err != nil {
